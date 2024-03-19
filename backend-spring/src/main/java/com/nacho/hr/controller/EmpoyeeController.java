@@ -5,12 +5,12 @@ import com.nacho.hr.service.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employee")
@@ -27,5 +27,29 @@ public class EmpoyeeController {
         return employeeService.getAllEmployees();
     }
 
-    // localhost:8080/employee
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable Integer id){
+        LOGGER.info("Getting employee by id: " + id);
+        return employeeService.getEmployeeById(id);
+    }
+
+    @PostMapping
+    public Employee addEmployee(@RequestBody Employee employee){
+        LOGGER.info("Adding employee: " + employee);
+        return employeeService.addOrUpdateEmployee(employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public Boolean deleteEmployee(@PathVariable Integer id){
+        Employee employee = employeeService.getEmployeeById(id);
+        if(employee == null){
+            LOGGER.error("Employee with id " + id + " not found");
+            return ResponseEntity.notFound().build().hasBody();
+        }
+        LOGGER.info("Deleting employee by id: " + id);
+        employeeService.deleteEmployee(id);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response).hasBody();
+    }
 }

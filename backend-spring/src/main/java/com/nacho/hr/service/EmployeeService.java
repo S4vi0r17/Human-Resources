@@ -19,17 +19,11 @@ public class EmployeeService implements IEmployeeService{
 
     @Override
     public Employee getEmployeeById(Integer id) {
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        return employee;
+        return employeeRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Employee addEmployee(Employee employee) {
-        return employeeRepository.save(employee);
-    }
-
-    @Override
-    public Employee updateEmployee(Employee employee) {
+    public Employee addOrUpdateEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
